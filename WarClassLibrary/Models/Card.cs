@@ -1,5 +1,6 @@
-﻿using static WarClassLibrary.Ranks;
-using static WarClassLibrary.Suits;
+﻿using WarClassLibrary.Models;
+using static WarClassLibrary.Models.Ranks;
+using static WarClassLibrary.Models.Suits;
 
 namespace WarClassLibrary
 {

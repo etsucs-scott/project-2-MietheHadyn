@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WarClassLibrary
+namespace WarClassLibrary.Models
 {
-    internal class PlayerHand
+    public class PlayerHand
     {
         //holds a Dictionary<string, Hand> keyed by player name
     }

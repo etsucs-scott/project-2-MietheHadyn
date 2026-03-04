@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WarClassLibrary
+namespace WarClassLibrary.Models
 {
 
     /// <summary>

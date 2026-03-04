@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace WarClassLibrary
+namespace WarClassLibrary.Models
 {
-    internal class PlayedCards
+    public class PlayedCards
     {
         // holds a dictionary<string, Card> of Each rounds played cards, used to determine the winner of each round
+
+        Dictionary<string, Card> playedCards = new();
     }
 }
