@@ -10,18 +10,18 @@ namespace WarClassLibrary.Models
     /// </summary>
     public class Hand
     {
-        private readonly List<Card> cards = new();
-        private readonly IReadOnlyList<Card> readOnlyCards;
+        private readonly Queue<Card> cards = new();
+        private readonly IReadOnlyCollection<Card> readOnlyCards;
 
         public Hand()
         {
-            readOnlyCards = cards.AsReadOnly();
+            readOnlyCards = cards;
         }
 
         /// <summary>
         /// Gets a read-only view of cards in this hand.
         /// </summary>
-        public IReadOnlyList<Card> Cards => readOnlyCards;
+        public IReadOnlyCollection<Card> Cards => readOnlyCards;
 
         /// <summary>
         /// Adds one card to the hand.
@@ -30,7 +30,7 @@ namespace WarClassLibrary.Models
         public void Add(Card card)
         {
             ArgumentNullException.ThrowIfNull(card);
-            cards.Add(card);
+            cards.Enqueue(card);
         }
 
         /// <summary>

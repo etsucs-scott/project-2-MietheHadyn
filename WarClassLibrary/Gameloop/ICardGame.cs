@@ -2,6 +2,7 @@
 
 namespace WarClassLibrary.Gameloop
 {
+    //idk if i'm gonna use this
 
     /// <summary>
     /// Defines the basic lifecycle and shared data for a card game hand.

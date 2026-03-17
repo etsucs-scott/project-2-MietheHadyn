@@ -36,4 +36,5 @@ namespace WarClassLibrary.Models
             return $"{Name} | Hand: {Hand}";
         }
     }
+
 }
