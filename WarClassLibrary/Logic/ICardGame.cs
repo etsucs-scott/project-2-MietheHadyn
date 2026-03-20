@@ -24,6 +24,7 @@ namespace WarClassLibrary.Gameloop
         /// </summary>
         Player[] Players { get; }
 
+
         /// <summary>
         /// Sets up a new hand.
         /// </summary>
@@ -37,7 +38,7 @@ namespace WarClassLibrary.Gameloop
         /// <summary>
         /// Finalizes the hand.
         /// </summary>
-        void EndHand();
+        void EndHand(Player winner);
     }
 
 }

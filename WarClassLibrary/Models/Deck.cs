@@ -14,7 +14,7 @@ namespace WarClassLibrary.Models
         //holds a stack of cards
         //Code credit: code based off of/using https://github.com/etsucs-scott/card-games/blob/main/CardGames.Core/Models/Deck.cs
 
-        private readonly List<Card> cards = new();
+        private readonly Stack<Card> cards = new();
         /// <summary>
         /// counts the cards in the deck
         /// </summary>
@@ -26,12 +26,20 @@ namespace WarClassLibrary.Models
         public Deck()
         {
 
+            // Build into a temporary list in a consistent order, then push into the stack
+            var temp = new List<Card>();
             foreach (Suit suit in Enum.GetValues<Suit>())
             {
                 foreach (Rank rank in Enum.GetValues<Rank>())
                 {
-                    cards.Add(new Card(suit, rank));
+                    temp.Add(new Card(suit, rank));
                 }
+            }
+
+            // Push in order so that the last element of temp becomes the top of the stack
+            for (int i = 0; i < temp.Count; i++)
+            {
+                cards.Push(temp[i]);
             }
         }
 
@@ -40,10 +48,19 @@ namespace WarClassLibrary.Models
         /// </summary>
         public void Shuffle()
         {
-            for (int i = cards.Count - 1; i > 0; i--)
+            // Convert to a list, shuffle it, then rebuild the stack so top corresponds to the list's last element
+            var list = new List<Card>(cards);
+
+            for (int i = list.Count - 1; i > 0; i--)
             {
                 int j = Random.Shared.Next(0, i + 1);
-                (cards[i], cards[j]) = (cards[j], cards[i]);
+                (list[i], list[j]) = (list[j], list[i]);
+            }
+
+            cards.Clear();
+            for (int i = 0; i < list.Count; i++)
+            {
+                cards.Push(list[i]);
             }
         }
 
@@ -52,16 +69,14 @@ namespace WarClassLibrary.Models
         /// <summary>
         /// Draws card from the deck's top
         /// </summary>
-        public Card Draw()
-        {             if (cards.Count == 0)
+        public  Card Draw(Deck deck)
+        {
+            if (cards.Count == 0)
             {
                 throw new InvalidOperationException("Deck is empty");
             }
-            Card card = cards[^1];
-            cards.RemoveAt(cards.Count - 1);
-            return card;
 
-            //distribute all cards to players after shuffling in gameplay loop
+            return cards.Pop();
         }
 
 

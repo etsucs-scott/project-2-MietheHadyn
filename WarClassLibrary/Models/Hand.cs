@@ -23,19 +23,31 @@ namespace WarClassLibrary.Models
         /// </summary>
         public IReadOnlyCollection<Card> Cards => readOnlyCards;
 
-        /// <summary>
-        /// Adds one card to the hand.
-        /// </summary>
-        /// <param name="card">Card to add.</param>
-        public void Add(Card card)
+        ///<summary>
+        ///Adds one card to the hand.
+        ///</summary>
+        public  void Add(Card card)
         {
             ArgumentNullException.ThrowIfNull(card);
             cards.Enqueue(card);
         }
 
-        /// <summary>
-        /// Removes all cards from the hand.
-        /// </summary>
+        ///<summary>
+        ///Attempts to remove and return the card at the front of the hand.
+        ///</summary>
+        public bool TryPull(out Card card)
+        {
+            return cards.TryDequeue(out card);
+        }
+
+        ///<summary>
+        ///Count number of cards in the hand.
+        ///</summary>
+        public int Count => cards.Count;
+
+        ///<summary>
+        ///Removes all cards from the hand.
+        ///</summary>
         public void Clear()
         {
             cards.Clear();

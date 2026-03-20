@@ -1,17 +1,24 @@
 ﻿//Code credit: much code based from/using https://github.com/etsucs-scott/card-games
 
+using System;
+using System.Linq;
+using System.Collections.Generic;
+using WarClassLibrary;
 using WarClassLibrary.Gameloop;
 using WarClassLibrary.Models;
 
-internal class WarGame : ICardGame
+public class WarGame : ICardGame
 {
+    
+    
+    private readonly PlayedCards playedCards = new PlayedCards();
+    private readonly PlayerHand playerHandMap;
     private readonly Player[] players;
 
     /// <summary>
     /// Gets the game name.
     /// </summary>
-    string ICardGame.Name => "War";
-    public string Name = "War";
+    public string Name { get; set; }
 
     /// <summary>
     /// Gets the current deck.
@@ -19,21 +26,24 @@ internal class WarGame : ICardGame
     public Deck Deck { get; protected set; }
 
     /// <summary>
-    /// Gets the players seated in this game.
+    /// Gets the players seated in the game.
     /// </summary>
-    public Player[] Players => players.ToArray();
+    public Player[] Players => players;
 
     /// <summary>
-    /// Gets a read-only view of players.
+    /// Read-only view of players.
     /// </summary>
     public IReadOnlyList<Player> PlayersView => Array.AsReadOnly(players);
+
+    
+    
 
     
 
     /// <summary>
     /// Creates a base game with a name and players.
     /// </summary>
-    protected WarGame(string name, Player[] players)
+    public WarGame(string name, Player[] players)
     {
         if (string.IsNullOrWhiteSpace(name))
         {
@@ -55,6 +65,7 @@ internal class WarGame : ICardGame
         Name = name;
         this.players = players.ToArray();
         Deck = new Deck();
+        playerHandMap = new PlayerHand(this.players);
     }
     /// <summary>
     /// Clears every player's hand.
@@ -70,10 +81,11 @@ internal class WarGame : ICardGame
     /// <summary>
     /// Deals a specific number of cards to one player.
     /// </summary>
-    protected void DealTo(Player player, int numberOfCards)
+    public static void DealTo(Player player, int numberOfCards)
     {
         ArgumentNullException.ThrowIfNull(player);
 
+        
         if (numberOfCards <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(numberOfCards), "Cards dealt must be greater than zero.");
@@ -90,7 +102,7 @@ internal class WarGame : ICardGame
     /// <summary>
     /// Ensures the deck has enough cards for an operation.
     /// </summary>
-    protected void EnsureDeckHasCards(int neededCards)
+    protected static void EnsureDeckHasCards(int neededCards)
     {
         if (neededCards <= 0)
         {
@@ -131,20 +143,55 @@ internal class WarGame : ICardGame
     /// </summary>
     public void StartHand()
     {
-        //place a card, dequeued from the top
+        //check for empty hand
+        foreach (var player in players)
+        {
+            if (player == null) continue;
+            if (player.Hand.Count == 0)
+            {
+                throw new InvalidOperationException($"Player {player.Name} has no cards left to play.");
+            }
+        }
+
+            //place a card, dequeued from the top
+            //for each player: dequeue from player.Hand, add to played cards dictionary, with key as player name and value as card
+            foreach (var player in players)
+        {
+            if (player == null) continue;
+            if (player.Hand.TryPull(out Card card))
+            {
+                playedCards.Add(player.Name, card);
+            }
+        }
+
     }
     /// <summary>
     /// Plays a single hand in the current game session.
     /// </summary>
-    public void PlayHand()
+    public void PlayHand() //sepatate this into a separate thing later
     {
+        var winner = PlayersView.FirstOrDefault(p => p.Name == playedCards.Played.OrderByDescending(kv => kv.Value.Rank).First().Key);      
+        bool hasDuplicates = playedCards.playedCards.Count != playedCards.playedCards.Distinct().Count();
 
-    }
+        if (hasDuplicates)
+        {
+            Console.WriteLine("There's a tie! place more cards");
+            StartHand();
+            PlayHand();
+        }
+
+        
+    } 
     /// <summary>
-    /// Ends the current hand and performs any necessary cleanup or state updates.
+    /// Ends the current hand and adds played cards into winner's hand.
     /// </summary>
-    public void EndHand()
+    public void EndHand(Player winner)
     {
-
+        Console.WriteLine($"Round winner: {winner} recives all played cards");
+        foreach (var kv in playedCards.Played)
+        {
+            Card card = kv.Value;
+            winner.Hand.Add(card);
+        }
     }
 }
