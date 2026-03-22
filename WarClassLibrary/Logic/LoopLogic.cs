@@ -24,15 +24,20 @@ namespace WarClassLibrary.Gameloop
             int RountCnt = 0;
 
 
-            players.Append(human);
+            
             WarGame War = new WarGame("War", players);
 
 
-
-            foreach (var player in players)
+            while (deck.Count > 0)
             {
-                War.DealTo(player, 1);
 
+
+                foreach (var player in players)
+                {
+                    Player gettingCard = player;
+                    War.DealTo(gettingCard, 1);
+
+                }  
             }
 
             Player winner = defail;

@@ -82,10 +82,10 @@ public class WarGame : ICardGame
     /// <summary>
     /// Deals a specific number of cards to one player.
     /// </summary>
-    public void DealTo(Player player, int numberOfCards)
+    public void DealTo(Player gettingCard, int numberOfCards)
     {
-        ArgumentNullException.ThrowIfNull(player);
-        
+        ArgumentNullException.ThrowIfNull(gettingCard);
+
         numberOfCards = 1;
 
         if (numberOfCards <= 0)
@@ -95,12 +95,17 @@ public class WarGame : ICardGame
 
 
         bool deckHasCards = EnsureDeckHasCards(numberOfCards);
-        if (!deckHasCards)
+        if (deckHasCards)
         {
             while (Deck.Count > 0)
             {
-                player.Hand.Add(Deck.Draw());
+                gettingCard.Hand.Add(Deck.Draw());
             }
+        }
+        else if (!deckHasCards)
+        {
+            throw new InvalidOperationException(
+                $"Cannot deal {numberOfCards} cards to {gettingCard.Name}. Deck does not contain enough cards.");
         }
 
 
