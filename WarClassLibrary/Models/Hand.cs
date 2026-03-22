@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WarClassLibrary.Models
+﻿namespace WarClassLibrary.Models
 {
 
     /// <summary>
@@ -26,7 +22,7 @@ namespace WarClassLibrary.Models
         ///<summary>
         ///Adds one card to the hand.
         ///</summary>
-        public  void Add(Card card)
+        public void Add(Card card)
         {
             ArgumentNullException.ThrowIfNull(card);
             cards.Enqueue(card);

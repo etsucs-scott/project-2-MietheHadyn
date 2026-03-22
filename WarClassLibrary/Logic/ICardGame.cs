@@ -33,7 +33,7 @@ namespace WarClassLibrary.Gameloop
         /// <summary>
         /// Executes game-specific hand logic and determines results.
         /// </summary>
-        void PlayHand();
+        Player PlayHand();
 
         /// <summary>
         /// Finalizes the hand.

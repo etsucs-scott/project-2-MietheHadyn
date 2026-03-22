@@ -1,16 +1,13 @@
 ﻿//Code credit: much code based from/using https://github.com/etsucs-scott/card-games
 
-using System;
-using System.Linq;
-using System.Collections.Generic;
 using WarClassLibrary;
 using WarClassLibrary.Gameloop;
 using WarClassLibrary.Models;
 
 public class WarGame : ICardGame
 {
-    
-    
+
+
     private readonly PlayedCards playedCards = new PlayedCards();
     private readonly PlayerHand playerHandMap;
     private readonly Player[] players;
@@ -19,6 +16,7 @@ public class WarGame : ICardGame
     /// Gets the game name.
     /// </summary>
     public string Name { get; set; }
+    public List<Player> Players1 { get; }
 
     /// <summary>
     /// Gets the current deck.
@@ -35,16 +33,18 @@ public class WarGame : ICardGame
     /// </summary>
     public IReadOnlyList<Player> PlayersView => Array.AsReadOnly(players);
 
-    
-    
 
-    
+
+
+
 
     /// <summary>
     /// Creates a base game with a name and players.
     /// </summary>
-    public WarGame(string name, Player[] players)
+    public WarGame(string name, List<Player> players)
     {
+        bool isEmpty = !players.Any();
+
         if (string.IsNullOrWhiteSpace(name))
         {
             throw new ArgumentException("Game name cannot be null, empty, or whitespace.", nameof(name));
@@ -52,7 +52,7 @@ public class WarGame : ICardGame
 
         ArgumentNullException.ThrowIfNull(players);
 
-        if (players.Length == 0)
+        if (isEmpty)
         {
             throw new ArgumentException("At least one player is required.", nameof(players));
         }
@@ -63,6 +63,7 @@ public class WarGame : ICardGame
         }
 
         Name = name;
+        Players1 = players;
         this.players = players.ToArray();
         Deck = new Deck();
         playerHandMap = new PlayerHand(this.players);
@@ -81,38 +82,52 @@ public class WarGame : ICardGame
     /// <summary>
     /// Deals a specific number of cards to one player.
     /// </summary>
-    public static void DealTo(Player player, int numberOfCards)
+    public void DealTo(Player player, int numberOfCards)
     {
         ArgumentNullException.ThrowIfNull(player);
+        Deck deck = new Deck();
+        deck.Shuffle();
+        numberOfCards = 1;
 
-        
         if (numberOfCards <= 0)
         {
             throw new ArgumentOutOfRangeException(nameof(numberOfCards), "Cards dealt must be greater than zero.");
         }
 
-        EnsureDeckHasCards(numberOfCards);
 
-        for (int i = 0; i < numberOfCards; i++)
+        bool deckHasCards = EnsureDeckHasCards(numberOfCards);
+        if (!deckHasCards)
         {
-            player.Hand.Add(Deck.Draw());
+            while (Deck.Count > 0)
+            {
+                player.Hand.Add(Deck.Draw(deck));
+            }
         }
+
+
+
     }
 
     /// <summary>
     /// Ensures the deck has enough cards for an operation.
     /// </summary>
-    protected static void EnsureDeckHasCards(int neededCards)
+    protected bool EnsureDeckHasCards(int neededCards)
     {
         if (neededCards <= 0)
         {
+            return true;
             throw new ArgumentOutOfRangeException(nameof(neededCards), "Needed cards must be greater than zero.");
         }
 
         if (Deck.Count < neededCards)
         {
+            return false;
             throw new InvalidOperationException(
                 $"Deck does not contain enough cards. Needed {neededCards}, available {Deck.Count}.");
+        }
+        else
+        {
+            return true;
         }
     }
 
@@ -146,21 +161,23 @@ public class WarGame : ICardGame
         //check for empty hand
         foreach (var player in players)
         {
-            if (player == null) continue;
+
             if (player.Hand.Count == 0)
             {
                 throw new InvalidOperationException($"Player {player.Name} has no cards left to play.");
+                players.ToList().Remove(player);
             }
         }
 
-            //place a card, dequeued from the top
-            //for each player: dequeue from player.Hand, add to played cards dictionary, with key as player name and value as card
-            foreach (var player in players)
+        //place a card, dequeued from the top
+        //for each player: dequeue from player.Hand, add to played cards dictionary, with key as player name and value as card
+        foreach (var player in players)
         {
             if (player == null) continue;
             if (player.Hand.TryPull(out Card card))
             {
                 playedCards.Add(player.Name, card);
+                Console.WriteLine(player.Name, card);
             }
         }
 
@@ -168,9 +185,9 @@ public class WarGame : ICardGame
     /// <summary>
     /// Plays a single hand in the current game session.
     /// </summary>
-    public void PlayHand() //sepatate this into a separate thing later
+    public Player PlayHand()
     {
-        var winner = PlayersView.FirstOrDefault(p => p.Name == playedCards.Played.OrderByDescending(kv => kv.Value.Rank).First().Key);      
+        var winner = PlayersView.FirstOrDefault(p => p.Name == playedCards.Played.OrderByDescending(kv => kv.Value.Rank).First().Key);
         bool hasDuplicates = playedCards.playedCards.Count != playedCards.playedCards.Distinct().Count();
 
         if (hasDuplicates)
@@ -180,8 +197,9 @@ public class WarGame : ICardGame
             PlayHand();
         }
 
-        
-    } 
+        return winner;
+
+    }
     /// <summary>
     /// Ends the current hand and adds played cards into winner's hand.
     /// </summary>

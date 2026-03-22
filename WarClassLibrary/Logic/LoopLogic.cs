@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using WarClassLibrary.Models;
 
@@ -12,21 +13,46 @@ namespace WarClassLibrary.Gameloop
         /// </summary>
         public static void PlayGame()
         {
-            //Create a default game with one human and one computer player.
-            var human = new Player("Human");
-            var computer = new Player("Computer 1");
+            Player defail = new Player("default"); //default winner player if something goes wrong
+            List<Player> players = new List<Player>();
+            Player human = Player.CreateHumanPlayer();
+            List<Player> bots = Player.CreateCompPlayer().ToList();
+            players.Add(human);
+            players.AddRange(bots);
+            int RountCnt = 0;
 
-            ICardGame game = new WarGame("War", new Player[] { human, computer });
-            game.Deck.Shuffle();
 
-            game.StartHand();
-            game.PlayHand();
+            players.Append(human);
+            WarGame War = new WarGame("War", players);
 
-            //default, give the played cards to first player.
-            Player winner = game.Players.Length > 0 ? game.Players[0] : null;
-            if (winner != null)
+
+
+            foreach (var player in players)
             {
-                game.EndHand(winner);
+                War.DealTo(player, 1);
+
+            }
+
+            Player winner = defail;
+
+            while (RountCnt is < 10000 || players.Count > 1)
+            {
+                War.StartHand();
+                War.PlayHand();
+                War.EndHand(winner);
+
+                RountCnt++;
+            }
+
+            if (RountCnt == 10000)
+            {
+                //winner is the player with the most cards
+                winner = players.OrderByDescending(p => p.Hand.Cards.Count).FirstOrDefault();
+                Console.WriteLine($"Game end due to maximum round limit, winner: {winner}");
+            }
+            else if (players.Count == 1)
+            {
+                Console.WriteLine($"One player remains! winner is {players}");
             }
         }
     }
