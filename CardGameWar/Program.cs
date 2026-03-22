@@ -15,18 +15,7 @@ internal class Program
 
 
     }
-    public static void DealTest() //temp test method to test dealing cards to player, delet later?
-    {
-        List<Player> players = new List<Player>();
-        Player human = Player.CreateHumanPlayer();
-        players.Add(human);
-        Deck deck = new Deck();
-        deck.Shuffle();
-        WarGame War = new WarGame("War", players);
-
-        War.DealTo(human, 1);
-        Console.WriteLine(human.Hand);
-    }
+    
 
 
 }

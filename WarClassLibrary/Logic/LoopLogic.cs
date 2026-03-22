@@ -36,7 +36,7 @@ namespace WarClassLibrary.Gameloop
                 {
                     Player gettingCard = player;
                     War.DealTo(gettingCard, 1);
-
+                    Console.WriteLine($"card dealt to {gettingCard.Name}");
                 }  
             }
 
@@ -61,6 +61,19 @@ namespace WarClassLibrary.Gameloop
             {
                 Console.WriteLine($"One player remains! winner is {players}");
             }
+        }
+
+        public static void DealTest() //temp test method to test dealing cards to player, delet later?
+        {
+            List<Player> players = new List<Player>();
+            Player human = Player.CreateHumanPlayer();
+            players.Add(human);
+            Deck deck = new Deck();
+            deck.Shuffle();
+            WarGame War = new WarGame("War", players);
+
+            War.DealTo(human, 1);
+            Console.WriteLine(human.Hand);
         }
     }
 }

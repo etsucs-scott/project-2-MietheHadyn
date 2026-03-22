@@ -25,5 +25,10 @@ namespace WarClassLibrary
             Suit = suit;
             Rank = rank;
         }
+
+        public override string ToString()
+        {
+            return $"{Rank} of {Suit}";
+        }
     }
 }

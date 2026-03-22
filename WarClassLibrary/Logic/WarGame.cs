@@ -97,15 +97,15 @@ public class WarGame : ICardGame
         bool deckHasCards = EnsureDeckHasCards(numberOfCards);
         if (deckHasCards)
         {
-            while (Deck.Count > 0)
-            {
                 gettingCard.Hand.Add(Deck.Draw());
-            }
+            
         }
         else if (!deckHasCards)
         {
             throw new InvalidOperationException(
                 $"Cannot deal {numberOfCards} cards to {gettingCard.Name}. Deck does not contain enough cards.");
+            
+            
         }
 
 
