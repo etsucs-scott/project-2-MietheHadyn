@@ -71,7 +71,7 @@ namespace WarClassLibrary.Models
         /// <summary>
         /// Draws card from the deck's top
         /// </summary>
-        public  Card Draw(Deck deck)
+        public  Card Draw()
         {
             if (cards.Count == 0)
             {

@@ -85,8 +85,7 @@ public class WarGame : ICardGame
     public void DealTo(Player player, int numberOfCards)
     {
         ArgumentNullException.ThrowIfNull(player);
-        Deck deck = new Deck();
-        deck.Shuffle();
+        
         numberOfCards = 1;
 
         if (numberOfCards <= 0)
@@ -100,7 +99,7 @@ public class WarGame : ICardGame
         {
             while (Deck.Count > 0)
             {
-                player.Hand.Add(Deck.Draw(deck));
+                player.Hand.Add(Deck.Draw());
             }
         }
 

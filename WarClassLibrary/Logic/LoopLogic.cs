@@ -19,6 +19,8 @@ namespace WarClassLibrary.Gameloop
             List<Player> bots = Player.CreateCompPlayer().ToList();
             players.Add(human);
             players.AddRange(bots);
+            Deck deck = new Deck();
+            deck.Shuffle();
             int RountCnt = 0;
 
 
