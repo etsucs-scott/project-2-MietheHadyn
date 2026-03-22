@@ -26,7 +26,7 @@ namespace WarClassLibrary.Models
         public Deck()
         {
 
-            // Build into a temporary list in a consistent order, then push into the stack
+            //Build into temporary list in consistent order, then push into stack
             var temp = new List<Card>();
             foreach (Suit suit in Enum.GetValues<Suit>())
             {
@@ -36,7 +36,7 @@ namespace WarClassLibrary.Models
                 }
             }
 
-            // Push in order so that the last element of temp becomes the top of the stack
+            //Push in order so that the last element of temp becomes the top of the stack
             for (int i = 0; i < temp.Count; i++)
             {
                 cards.Push(temp[i]);
@@ -48,7 +48,7 @@ namespace WarClassLibrary.Models
         /// </summary>
         public void Shuffle()
         {
-            // Convert to a list, shuffle it, then rebuild the stack so top corresponds to the list's last element
+            //Convert to list, shuffle, then rebuild stack so top corresponds to list's last element
             var list = new List<Card>(cards);
 
             for (int i = list.Count - 1; i > 0; i--)
