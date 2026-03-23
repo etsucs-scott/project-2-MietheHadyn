@@ -3,6 +3,7 @@
 using WarClassLibrary;
 using WarClassLibrary.Gameloop;
 using WarClassLibrary.Models;
+using System.Linq;
 
 public class WarGame : ICardGame
 {
@@ -102,13 +103,13 @@ public class WarGame : ICardGame
             {
                 throw new InvalidOperationException($"Cannot deal {numberOfCards} cards to {gettingCard.Name}. Deck does not contain enough cards.");
             }
-            
+
         }
         catch (InvalidOperationException)
         {
             Console.WriteLine("Deck is now empty");
             return;
-            
+
         }
 
 
@@ -171,7 +172,7 @@ public class WarGame : ICardGame
 
             if (player.Hand.Count == 0)
             {
-                throw new InvalidOperationException($"Player {player.Name} has no cards left to play.");
+                Console.WriteLine($"Player {player.Name} has no cards left to play, and will be removed from the game.");
                 players.ToList().Remove(player);
             }
             else
@@ -187,8 +188,8 @@ public class WarGame : ICardGame
             if (player == null) continue;
             if (player.Hand.TryPull(out Card card))
             {
-                playedCards.Add(player.Name, card);
-                Console.WriteLine(player.Name, card.ToString());
+                playedCards.Add(player, card);
+                Console.WriteLine($"{player.Name} Plays {card}");
             }
         }
 
@@ -198,17 +199,21 @@ public class WarGame : ICardGame
     /// </summary>
     public Player PlayHand()
     {
-        var winner = PlayersView.First(p => p.Name == playedCards.Played.OrderByDescending(kv => kv.Value.Rank).First().Key);
-        bool hasDuplicates = playedCards.playedCards.Count != playedCards.playedCards.Distinct().Count();
+        Card bestCard = playedCards.playedCards.MaxBy(x => x.Value.Rank).Value;
+        var winner = playedCards.playedCards
+            .Where(x => x.Value.Rank == bestCard.Rank)
+            .ToList();
+        var ties = winner.Select(x => x.Key).ToList();
 
-        if (hasDuplicates)
+        if (ties.Count > 1)
         {
             Console.WriteLine("There's a tie! place more cards");
             StartHand();
             PlayHand();
         }
 
-        return winner;
+
+        return winner[0].Key;
 
     }
     /// <summary>
@@ -216,11 +221,36 @@ public class WarGame : ICardGame
     /// </summary>
     public void EndHand(Player winner)
     {
-        Console.WriteLine($"Round winner: {winner} recives all played cards");
+        Console.WriteLine($"Round winner: {winner.Name} recives all played cards");
         foreach (var kv in playedCards.Played)
         {
             Card card = kv.Value;
             winner.Hand.Add(card);
         }
+
+        playedCards.clear();
+    }
+    /// <summary>
+    /// prompts the player to continue to the next round
+    /// </summary>
+    public void Continue() //Asks player to continue to next round, mostly to prevent it from running all the way through too quickly or infinitely
+    {
+        Console.WriteLine("Continue to next round? (Y/N)  ");
+        string cont = Console.ReadLine().Trim();
+        if (cont == "Y" || cont == "y")
+        {
+            return;
+        }
+        else if (cont == "N" || cont == "n")
+        {
+            Console.WriteLine("Game cancelled; no winner. Thanks for playing!");
+            Environment.Exit(0);
+        }
+        else
+        {
+            Console.WriteLine("Invalid input, please enter Y or N.");
+            Continue();
+        }
+
     }
 }

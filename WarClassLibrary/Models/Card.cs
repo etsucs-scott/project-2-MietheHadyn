@@ -7,7 +7,7 @@ namespace WarClassLibrary
     /// <summary>
     /// card, with a suit and rank
     /// </summary>
-    public class Card
+    public class Card 
     {
 
         /// <summary>
@@ -30,5 +30,12 @@ namespace WarClassLibrary
         {
             return $"{Rank} of {Suit}";
         }
+
+        /// <summary>
+        /// Compares the current instance with another PlayedCards object and returns an integer that indicates whether
+        /// the current instance precedes, follows, or occurs in the same position in the sort order as the other
+        /// object.
+        /// </summary>
+        
     }
 }

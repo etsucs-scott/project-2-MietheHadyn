@@ -19,13 +19,13 @@ namespace WarClassLibrary.Gameloop
             List<Player> bots = Player.CreateCompPlayer().ToList();
             players.Add(human);
             players.AddRange(bots);
-            Deck deck = new Deck();
-            deck.Shuffle();
+            
+            
             int RountCnt = 0;
             WarGame War = new WarGame("War", players);
+            War.Deck.Shuffle();
 
-
-            while (deck.Count > 0)
+            while (War.Deck.Count > 0)
             {
                
                 foreach (var player in players)
@@ -49,10 +49,11 @@ namespace WarClassLibrary.Gameloop
             while (RountCnt is < 10000 || players.Count > 1)
             {
                 War.StartHand();
-                War.PlayHand();
+                winner = War.PlayHand();
                 War.EndHand(winner);
 
                 RountCnt++;
+                War.Continue();
             }
 
             if (RountCnt == 10000)

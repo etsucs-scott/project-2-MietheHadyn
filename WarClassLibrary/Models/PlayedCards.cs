@@ -4,23 +4,28 @@ using System.Text;
 
 namespace WarClassLibrary.Models
 {
-    public class PlayedCards
+    public class PlayedCards 
     {
         // holds a dictionary<string, Card> of Each rounds played cards, used to determine the winner of each round
-        //will be added to winners hands at back of queue
-        public Dictionary<string, Card> playedCards = new Dictionary<string, Card>();
+        //will be added to winner's hand at back of queue
+        public Dictionary<Player, Card> playedCards = new Dictionary<Player, Card>();
 
         //A read only version
-        public IReadOnlyDictionary<string, Card> Played => playedCards;
+        public IReadOnlyDictionary<Player, Card> Played => playedCards;
 
-        public void Add(string playerName, Card card)
+        public void Add(Player player, Card card)
         {
-            ArgumentNullException.ThrowIfNull(playerName);
+            ArgumentNullException.ThrowIfNull(player);
             ArgumentNullException.ThrowIfNull(card);
-            playedCards[playerName] = card;
-            
+            playedCards.Add(player, card);
+
 
         }
 
+        public void clear()
+        {
+            playedCards.Clear();
+        }
+        
     }
 }
