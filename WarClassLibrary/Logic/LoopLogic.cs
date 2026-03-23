@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Security.Cryptography.X509Certificates;
-using System.Text;
-using WarClassLibrary.Models;
+﻿using WarClassLibrary.Models;
 
 namespace WarClassLibrary.Gameloop
 {
@@ -13,50 +9,52 @@ namespace WarClassLibrary.Gameloop
         /// </summary>
         public static void PlayGame()
         {
-            Player defail = new Player("default"); //default winner player if something goes wrong
+            Player defail = new Player("defail"); //default winner player if something goes wrong
             List<Player> players = new List<Player>();
             Player human = Player.CreateHumanPlayer();
             List<Player> bots = Player.CreateCompPlayer().ToList();
             players.Add(human);
             players.AddRange(bots);
-            
-            
-            int RountCnt = 0;
+
+
+            int RoundCnt = 0;
             WarGame War = new WarGame("War", players);
             War.Deck.Shuffle();
 
             while (War.Deck.Count > 0)
             {
-               
+
                 foreach (var player in players)
                 {
                     Player gettingCard = player;
                     War.DealTo(gettingCard, 1);
                     Console.WriteLine($"card dealt to {gettingCard.Name}");
-                    
+
                 }
 
                 bool deckHasCards = War.EnsureDeckHasCards(1);
                 if (!deckHasCards)
                 {
-                    Console.WriteLine("Deck is out of cards, cannot continue dealing.");
+                    Console.WriteLine("Deck is out of cards. Dealing complete.");
                     break;
                 } // finish dealing upon running out of cards
             }
 
             Player winner = defail;
 
-            while (RountCnt is < 10000 || players.Count > 1)
+            while (RoundCnt is < 10000 || players.Count > 1)
             {
+                RoundCnt++;
+                Console.WriteLine($"--------round number {RoundCnt}--------");
                 War.StartHand();
                 winner = War.PlayHand();
                 War.EndHand(winner);
 
-                RountCnt++;
+
                 War.Continue();
             }
 
-            if (RountCnt == 10000)
+            if (RoundCnt == 10000)
             {
                 //winner is the player with the most cards
                 winner = players.OrderByDescending(p => p.Hand.Cards.Count).First();
@@ -64,11 +62,12 @@ namespace WarClassLibrary.Gameloop
             }
             else if (players.Count == 1)
             {
+                //Last player left wins by default
                 Console.WriteLine($"One player remains! winner is {players}");
             }
         }
 
-        public static void DealTest() //temp test method to test dealing cards to player, delet later?
+        public static void DealTest() //temp test method to test dealing cards to player; diagnostic purposes
         {
             List<Player> players = new List<Player>();
             Player human = Player.CreateHumanPlayer();

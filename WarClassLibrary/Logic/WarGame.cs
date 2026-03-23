@@ -190,6 +190,7 @@ public class WarGame : ICardGame
             {
                 playedCards.Add(player, card);
                 Console.WriteLine($"{player.Name} Plays {card}");
+                Console.WriteLine("--------------------------------");
             }
         }
 
