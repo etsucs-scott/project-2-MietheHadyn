@@ -95,16 +95,19 @@ public class WarGame : ICardGame
 
 
         bool deckHasCards = EnsureDeckHasCards(numberOfCards);
-        if (deckHasCards)
+        try
         {
-                gettingCard.Hand.Add(Deck.Draw());
+            gettingCard.Hand.Add(Deck.Draw());
+            if (!deckHasCards)
+            {
+                throw new InvalidOperationException($"Cannot deal {numberOfCards} cards to {gettingCard.Name}. Deck does not contain enough cards.");
+            }
             
         }
-        else if (!deckHasCards)
+        catch (InvalidOperationException)
         {
-            throw new InvalidOperationException(
-                $"Cannot deal {numberOfCards} cards to {gettingCard.Name}. Deck does not contain enough cards.");
-            
+            Console.WriteLine("Deck is now empty");
+            return;
             
         }
 
@@ -115,7 +118,7 @@ public class WarGame : ICardGame
     /// <summary>
     /// Ensures the deck has enough cards for an operation.
     /// </summary>
-    protected bool EnsureDeckHasCards(int neededCards)
+    public bool EnsureDeckHasCards(int neededCards)
     {
         if (neededCards <= 0)
         {
@@ -171,6 +174,10 @@ public class WarGame : ICardGame
                 throw new InvalidOperationException($"Player {player.Name} has no cards left to play.");
                 players.ToList().Remove(player);
             }
+            else
+            {
+                Console.WriteLine($"Player {player.Name} has {player.Hand.Count} cards left.");
+            }
         }
 
         //place a card, dequeued from the top
@@ -181,7 +188,7 @@ public class WarGame : ICardGame
             if (player.Hand.TryPull(out Card card))
             {
                 playedCards.Add(player.Name, card);
-                Console.WriteLine(player.Name, card);
+                Console.WriteLine(player.Name, card.ToString());
             }
         }
 
@@ -191,7 +198,7 @@ public class WarGame : ICardGame
     /// </summary>
     public Player PlayHand()
     {
-        var winner = PlayersView.FirstOrDefault(p => p.Name == playedCards.Played.OrderByDescending(kv => kv.Value.Rank).First().Key);
+        var winner = PlayersView.First(p => p.Name == playedCards.Played.OrderByDescending(kv => kv.Value.Rank).First().Key);
         bool hasDuplicates = playedCards.playedCards.Count != playedCards.playedCards.Distinct().Count();
 
         if (hasDuplicates)

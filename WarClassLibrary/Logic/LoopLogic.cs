@@ -22,22 +22,26 @@ namespace WarClassLibrary.Gameloop
             Deck deck = new Deck();
             deck.Shuffle();
             int RountCnt = 0;
-
-
-            
             WarGame War = new WarGame("War", players);
 
 
             while (deck.Count > 0)
             {
-
-
+               
                 foreach (var player in players)
                 {
                     Player gettingCard = player;
                     War.DealTo(gettingCard, 1);
                     Console.WriteLine($"card dealt to {gettingCard.Name}");
-                }  
+                    
+                }
+
+                bool deckHasCards = War.EnsureDeckHasCards(1);
+                if (!deckHasCards)
+                {
+                    Console.WriteLine("Deck is out of cards, cannot continue dealing.");
+                    break;
+                } // finish dealing upon running out of cards
             }
 
             Player winner = defail;
@@ -54,7 +58,7 @@ namespace WarClassLibrary.Gameloop
             if (RountCnt == 10000)
             {
                 //winner is the player with the most cards
-                winner = players.OrderByDescending(p => p.Hand.Cards.Count).FirstOrDefault();
+                winner = players.OrderByDescending(p => p.Hand.Cards.Count).First();
                 Console.WriteLine($"Game end due to maximum round limit, winner: {winner}");
             }
             else if (players.Count == 1)
