@@ -1,6 +1,6 @@
 ﻿namespace WarClassLibrary.Models
 {
-    public class Player
+    public class Player 
     {
         /// <summary>
         /// Gets the display name of the player.
@@ -25,6 +25,12 @@
         public IReadOnlyList<Player> PlayersView => Array.AsReadOnly(players);
 
         /// <summary>
+        /// Removes a player from the list of players.
+        /// </summary>
+        public void RemovePlayer(Player player)
+        {
+            players.ToList().Remove(player);
+        }
         /// Creates a player with an empty hand.
         /// </summary>
         /// <param name="name">Player name.</param>
@@ -43,6 +49,8 @@
         {
             return $"{Name} | Hand: {Hand}";
         }
+
+      
 
         /// <summary>
         /// Creates the human player by prompting for a name.

@@ -17,7 +17,8 @@ namespace WarClassLibrary.Models
         {
             ArgumentNullException.ThrowIfNull(player);
             ArgumentNullException.ThrowIfNull(card);
-            playedCards.Add(player, card);
+            playedCards[player] = card;
+
 
 
         }

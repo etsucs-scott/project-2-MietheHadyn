@@ -51,7 +51,7 @@ namespace WarClassLibrary.Gameloop
                 War.EndHand(winner);
 
 
-                War.Continue();
+                War.Continue(); 
             }
 
             if (RoundCnt == 10000)

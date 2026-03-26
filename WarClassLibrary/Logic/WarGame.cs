@@ -173,7 +173,8 @@ public class WarGame : ICardGame
             if (player.Hand.Count == 0)
             {
                 Console.WriteLine($"Player {player.Name} has no cards left to play, and will be removed from the game.");
-                players.ToList().Remove(player);
+                player.RemovePlayer(player);
+                //players.Remove(player, player.Hand);
             }
             else
             {
@@ -181,6 +182,7 @@ public class WarGame : ICardGame
             }
         }
 
+        Console.WriteLine("**************************************************");
         //place a card, dequeued from the top
         //for each player: dequeue from player.Hand, add to played cards dictionary, with key as player name and value as card
         foreach (var player in players)

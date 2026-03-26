@@ -1,10 +1,12 @@
-﻿namespace WarClassLibrary.Models
+﻿using System.Collections;
+
+namespace WarClassLibrary.Models
 {
 
     /// <summary>
     /// Cards held by one player
     /// </summary>
-    public class Hand
+    public class Hand : IEnumerable
     {
         private readonly Queue<Card> cards = new();
         private readonly IReadOnlyCollection<Card> readOnlyCards;
@@ -52,6 +54,15 @@
         public override string ToString()
         {
             return cards.Count == 0 ? "[empty]" : string.Join(", ", cards);
+        }
+
+
+        
+
+        public IEnumerator GetEnumerator()
+        {
+            return cards.GetEnumerator();
+
         }
     }
 }
