@@ -3,7 +3,6 @@
 using WarClassLibrary;
 using WarClassLibrary.Gameloop;
 using WarClassLibrary.Models;
-using System.Linq;
 
 public class WarGame : ICardGame
 {
@@ -169,11 +168,11 @@ public class WarGame : ICardGame
         //check for empty hand
         foreach (var player in players)
         {
-
+            if (player == null) continue;
             if (player.Hand.Count == 0)
             {
                 Console.WriteLine($"Player {player.Name} has no cards left to play, and will be removed from the game.");
-                player.RemovePlayer(player);
+                player.RemovePlayer(player, players);
                 //players.Remove(player, player.Hand);
             }
             else
@@ -212,7 +211,7 @@ public class WarGame : ICardGame
         {
             Console.WriteLine("There's a tie! place more cards");
             StartHand();
-            PlayHand();
+            return PlayHand();
         }
 
 

@@ -27,9 +27,12 @@
         /// <summary>
         /// Removes a player from the list of players.
         /// </summary>
-        public void RemovePlayer(Player player)
+        public void RemovePlayer(Player player, Player[] players)
         {
-            players.ToList().Remove(player);
+            //get the index of the player to remove
+            int index = players.IndexOf(player);
+            
+            players[index] = null;
         }
         /// Creates a player with an empty hand.
         /// </summary>
